@@ -1,6 +1,6 @@
 # requires python 3 & icalendar
 
-from bottle import route, run, template
+from bottle import route, run
 from icalendar import Calendar, vDDDTypes
 from datetime import date, datetime
 import urllib.request
