@@ -1,4 +1,4 @@
-restcal
+RESTcal
 =======
 
 A web service to filter and display iCal events.
