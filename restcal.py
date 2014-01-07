@@ -19,22 +19,20 @@ def cors():
 @route('/date/<date>')
 def byDate(date):
 	d = parseDate(date)
-	return filterEvents(lambda e: datePredicate(e, d), date.today())
+	return filterEvents(lambda e: datePredicate(e, d), today())
 
 @route('/type/<type>')
 def byType(type):
-	d = date.today()
-	return filterEvents(lambda e: typePredicate(e, type) and futurePredicate(e), d)
+	return filterEvents(lambda e: typePredicate(e, type) and futurePredicate(e), today())
 
 @route('/current')
 def current():
-	today = date.today()
-	todayStr = today.strftime(FORMAT)
+	todayStr = today().strftime(FORMAT)
 	return byDate(todayStr)
 
 @route('/current/<type>')
 def currentType(type):
-	d = date.today()
+	d = today()
 	return filterEvents(lambda e: typePredicate(e, type) and datePredicate(e, d), d)
 
 def getCal():
@@ -81,8 +79,11 @@ def typePredicate(event, t):
 	return t.lower() in summary
 
 def futurePredicate(event):
-	d = date.today()
+	d = today()
 	end = vDDDTypes.from_ical(event['DTEND'], d)
 	return d <= end
+
+def today():
+	return date.today()
 
 run(host='10.30.9.10', port=81)
