@@ -19,18 +19,12 @@ def cors():
 @route('/date/<date>')
 def byDate(date):
 	d = parseDate(date)
-	events = {}
-	for event in filterEvents(lambda e: datePredicate(e, d)):
-		events[event['SUMMARY']] = toDict(event, d)
-	return events
+	return filterEvents(lambda e: datePredicate(e, d), date.today())
 
 @route('/type/<type>')
 def byType(type):
-	d = date.today();
-	events = {}
-	for event in filterEvents(lambda e: typePredicate(e, type) and futurePredicate(e)):
-		events[event['SUMMARY']] = toDict(event, d)
-	return events
+	d = date.today()
+	return filterEvents(lambda e: typePredicate(e, type) and futurePredicate(e), d)
 
 @route('/current')
 def current():
@@ -41,10 +35,7 @@ def current():
 @route('/current/<type>')
 def currentType(type):
 	d = date.today()
-	events = {}
-	for event in filterEvents(lambda e: typePredicate(e, type) and datePredicate(e, d)):
-		events[event['SUMMARY']] = toDict(event, d)
-	return events
+	return filterEvents(lambda e: typePredicate(e, type) and datePredicate(e, d), d)
 
 def getCal():
 	calStr = fetch(URL)
@@ -58,8 +49,12 @@ def fetch(url):
 def parseDate(date):
 	return datetime.strptime(date, FORMAT).date()
 
-def filterEvents(predicate):
-        return [event for event in getEvents() if predicate(event)]
+def filterEvents(predicate, d):
+        events = {}
+        for event in getEvents():
+                if predicate(event):
+                        events[event['SUMMARY']] = toDict(event, d)
+        return events
 
 def getEvents():
 	events = []
