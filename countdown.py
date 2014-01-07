@@ -1,14 +1,20 @@
 # requires python 3 & icalendar
 
-from bottle import route, run
+from bottle import route, run, response, hook
 from icalendar import Calendar, vDDDTypes
 from datetime import date, datetime
 import urllib.request
 
-
 # TODO configurable
 URL = 'http://localhost/calendar.ics'
 FORMAT = '%d-%m-%Y'
+
+@hook('after_request')
+def cors():
+	# Don't use the wildcard '*' for Access-Control-Allow-Origin in production.
+	response.headers['Access-Control-Allow-Origin'] = '*'
+	response.headers['Access-Control-Allow-Methods'] = 'PUT, GET, POST, DELETE, OPTIONS'
+	response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
 
 @route('/date/<date>')
 def byDate(date):
