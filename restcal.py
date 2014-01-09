@@ -49,16 +49,10 @@ def parseDate(date):
 
 def filterEvents(predicate, d):
         events = {}
-        for event in getEvents():
+        for event in getCal().walk('VEVENT'):
                 if predicate(event):
                         events[event['SUMMARY']] = toDict(event, d)
         return events
-
-def getEvents():
-	events = []
-	for event in getCal().walk('VEVENT'):
-		events.append(event)
-	return events
 
 def toDict(event, d):
 	start = vDDDTypes.from_ical(event['DTSTART'], d)
